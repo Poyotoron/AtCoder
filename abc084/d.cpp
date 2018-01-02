@@ -1,33 +1,36 @@
-// 未AC(TLE)
-#include <cstdio>
-#include <vector>
+// 未AC(謎WA)
+#include <bits/stdc++.h>
 using namespace std;
 
-inline bool pcheck(int n){
-	if(n <= 1){
-		return false;
-	}else if (n == 2){
-		return true;
-	}
-	if (n%2 == 0) return false;
-	for(int i = 3; i*i<= n; i += 2){
-		if(n % i == 0) return false;
-	}
-	return true;
-}
-
 int main(void){
-	int q, l, r, tmp;
-	vector<int> cnt;
-	scanf("%d", &q);
-	for (int i = 0; i < q; ++i){
-		tmp = 0;
-		scanf("%d %d", &l, &r);
-		for (int j = (l+1)/2; j <= (r+1)/2; j++){
-			if (pcheck(j) == true && pcheck(2*j-1) == true) tmp++;
+	cin.tie(0);
+	ios::sync_with_stdio(false);
+
+	bool prime[100001];
+	int cnt[100002], n, l, r;
+	// エラトステネスの篩(ふるい)を用いて素数判定
+	// falseが素数でtrueが素数でないもの
+	for (int i = 2; i <= 100000; i++){
+		if (!prime[i]){
+			for (int j = i+i; j <= 100000; j += i){
+				prime[j] = true;
+			}
 		}
-		cnt.push_back(tmp);
 	}
-	for (int i = 0; i < cnt.size(); ++i) printf("%d\n", cnt[i]);
+	// 2017に似た数の捜索
+	for (int i = 3; i <= 100000; i += 2){
+		if (!prime[i] && !prime[(i+1)/2]){
+			cnt[i]++;
+		}
+	}
+	// 累積和を用いる
+	for (int i = 3; i <= 100000; i++){
+		cnt[i] += cnt[i-1];
+	}
+	cin >> n;
+	while (n--){
+		cin >> l >> r;
+		cout << cnt[r]-cnt[l-1] << "\n";
+	}
 	return 0;
 }
